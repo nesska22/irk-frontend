@@ -1,6 +1,9 @@
 import {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterForm(){
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -54,12 +57,13 @@ function RegisterForm(){
             <input type="email" name="email" value={formData.email} onChange={handleChange} required />
 
             <label>Numer telefonu:</label>
-            <input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
+            <input type="number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
 
             <label>Hasło:</label>
             <input type="password" name="passwordHash" value={formData.passwordHash} onChange={handleChange} required />
 
             <button type="submit" style={{ marginTop: '15px', padding: '10px' }}>Zarejestruj się</button>
+            <button type='button' onClick={()=> navigate('/login')} style={{background:'none', border:'none', color:'blue', cursor:'pointer', marginTop:'10px'}}>Masz już konto? Zaloguj się</button>
         </form>
     );
 }

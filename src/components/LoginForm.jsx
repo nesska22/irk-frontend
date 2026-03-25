@@ -42,25 +42,20 @@ function LoginForm(){
     };
 
     return (
-<div style={{ padding: '20px' }}>
+        <div>
             <h2>Logowanie</h2>
-            {/* Podpinamy naszą funkcję wysyłającą pod cały formularz */}
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px' }}>
+            <form onSubmit={handleSubmit}>
                 
                 <label>Email:</label>
-                {/* Atrybut 'name' musi się nazywać DOKŁADNIE TAK SAMO jak pole w naszym useState (loginData) */}
                 <input type="email" name="email" value={loginData.email} onChange={handleChange} required />
 
                 <label>Hasło:</label>
                 <input type="password" name="password" value={loginData.password} onChange={handleChange} required />
 
-                <button type="submit" style={{ marginTop: '10px', padding: '10px' }}>Zaloguj się</button>
-                
-                {/* Zwykły przycisk (type="button"), który nie wysyła formularza, tylko używa kierownicy do zmiany strony */}
-                <button type="button" onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', color: 'blue', cursor: 'pointer' }}>
+                <button type="submit">Zaloguj się</button>     
+                <button type="button" onClick={() => navigate('/register')} className="link-button">
                     Nie masz konta? Zarejestruj się
                 </button>
-                
             </form>
         </div>
     );

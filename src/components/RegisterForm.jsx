@@ -35,10 +35,8 @@ function RegisterForm(){
             if (response.ok){
                 const savedCandidate = await response.json();
                 console.log("Zapisano dane kandydata w bazie", savedCandidate);
-                alert("Zapisano dane kandydata w bazie");
             } else {
                 console.error("Odrzucono. kod błędu:", response.status);
-                alert("Błąd! Sprawdź konsolę.");
         }
     } catch (error){
         console.error("Błąd połączenia ze springiem", error);
@@ -46,7 +44,7 @@ function RegisterForm(){
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px' }}>
+        <form onSubmit={handleSubmit}>
             <label>Imię:</label>
             <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
 
@@ -62,8 +60,8 @@ function RegisterForm(){
             <label>Hasło:</label>
             <input type="password" name="passwordHash" value={formData.passwordHash} onChange={handleChange} required />
 
-            <button type="submit" style={{ marginTop: '15px', padding: '10px' }}>Zarejestruj się</button>
-            <button type='button' onClick={()=> navigate('/login')} style={{background:'none', border:'none', color:'blue', cursor:'pointer', marginTop:'10px'}}>Masz już konto? Zaloguj się</button>
+            <button type="submit">Zarejestruj się</button>
+            <button type='button' onClick={()=> navigate('/login')} className="link-button">Masz już konto? Zaloguj się</button>
         </form>
     );
 }

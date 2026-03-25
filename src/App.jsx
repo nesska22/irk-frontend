@@ -2,11 +2,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import RegisterForm from './components/RegisterForm';
 import LoginForm from './components/LoginForm';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
     <Router>
-      <div style={{padding:'40px'}}>
+      <div className='app-container'>
         <h1>System IRK</h1>
         <Routes>
           <Route path='/' element={<Navigate to ="/login"/>}/>
@@ -15,7 +16,7 @@ function App() {
 
           <Route path='/register' element={<RegisterForm/>}/>
 
-          <Route path='/dashboard' element={<h2>Witaj w panelu kandydata!</h2>}/>
+          <Route path='/dashboard' element={<Dashboard/>}/>
         </Routes>
       </div>
     </Router>

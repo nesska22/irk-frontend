@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import RegisterForm from './components/RegisterForm';
 import LoginForm from './components/LoginForm';
 import Dashboard from './components/Dashboard';
+import AdminLoginForm from './components/AdminLoginForm';
+import AdminDashboard from './components/AdminDashboard';
+
 
 function App() {
   return (
@@ -17,6 +20,10 @@ function App() {
           <Route path='/register' element={<RegisterForm/>}/>
 
           <Route path='/dashboard' element={<Dashboard/>}/>
+
+          <Route path="/admin/login" element={<AdminLoginForm/>} />
+
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Routes>
       </div>
     </Router>

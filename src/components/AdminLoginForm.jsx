@@ -1,8 +1,7 @@
 import { useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 
-function LoginForm(){
+function AdminLoginForm(){
     const navigate = useNavigate();
 
     const [loginData, setLoginData] = useState({
@@ -20,24 +19,23 @@ function LoginForm(){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("Próba logowania...", loginData);
-
         try {
-            const response = await fetch('http://localhost:8081/api/candidates/login', {
+            const response = await fetch('http://localhost:8081/api/admins/login', {
                 method:'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(loginData)
             });
 
             if(response.ok){
-                const user = await response.json();
+                const adminUser = await response.json();
 
-                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('currentUser', JSON.stringify({ ...adminUser, role: 'ADMIN' }));
 
-                alert(`Witaj z powrotem, ${user.firstName}!`);
-                navigate('/dashboard');
+                alert(`Zalogowano jako Administrator!`);
+
+                navigate('/admin-dashboard');
             } else {
-                alert("Błędny email lub hasło!");
+                alert("Odmowa dostępu! Błędne dane administratora.");
             }
         } catch (error) {
             console.error("Błąd połączenia z serwerem:", error);
@@ -45,23 +43,20 @@ function LoginForm(){
     };
 
     return (
-        <div>
-            <h2>Logowanie</h2>
+        <div style={{ border: '2px solid red', padding: '20px', borderRadius: '5px' }}>
+            <h2 style={{ color: 'red' }}>Logowanie do Panelu Administratora</h2>
             <form onSubmit={handleSubmit}>
-                
-                <label>Email:</label>
+
+                <label>Email pracowniczy:</label>
                 <input type="email" name="email" value={loginData.email} onChange={handleChange} required />
 
                 <label>Hasło:</label>
                 <input type="password" name="password" value={loginData.password} onChange={handleChange} required />
 
-                <button type="submit">Zaloguj się</button>     
-                <button type="button" onClick={() => navigate('/register')} className="link-button">
-                    Nie masz konta? Zarejestruj się
-                </button>
+                <button type="submit" style={{ backgroundColor: 'red', color: 'white' }}>Zaloguj jako Admin</button>
             </form>
         </div>
     );
 }
 
-export default LoginForm;
+export default AdminLoginForm;

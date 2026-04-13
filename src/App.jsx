@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm';
 import Dashboard from './components/Dashboard';
 import AdminLoginForm from './components/AdminLoginForm';
 import AdminDashboard from './components/AdminDashboard';
+import CoursesForm from './components/CoursesForm';
 
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
           <Route path='/register' element={<RegisterForm/>}/>
 
           <Route path='/dashboard' element={<Dashboard/>}/>
+
+          <Route path='/courses' element={<CoursesForm/>}/>
 
           <Route path="/admin/login" element={<AdminLoginForm/>} />
 

@@ -31,6 +31,9 @@ function LoginForm(){
 
             if(response.ok){
                 const user = await response.json();
+
+                localStorage.setItem('currentUser', JSON.stringify(user));
+
                 alert(`Witaj z powrotem, ${user.firstName}!`);
                 navigate('/dashboard');
             } else {

@@ -25,8 +25,18 @@ body {
   border-radius: 12px; 
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
   width: 100%;
-  max-width: 450px; 
+  max-width: 450px;
   text-align: center;
+}
+
+.results-page-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: transparent;
+  box-sizing: border-box;
+  text-align:center;
 }
 
 h1, h2 {

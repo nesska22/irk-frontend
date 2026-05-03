@@ -7,33 +7,72 @@ import AdminLoginForm from './components/AdminLoginForm';
 import AdminDashboard from './components/AdminDashboard';
 import CoursesForm from './components/CoursesForm';
 import AdminCoursesManager from './components/AdminCoursesManager';
-
+import ResultsForm from './components/ResultsForm';
 
 function App() {
   return (
     <Router>
-      <div className='app-container'>
-        <h1>System IRK</h1>
-        <Routes>
-          <Route path='/' element={<Navigate to ="/login"/>}/>
+      <Routes>
+        <Route path='/' element={<Navigate to ="/login"/>}/>
 
-          <Route path='/login' element={<LoginForm/>}/>
+        <Route path='/login' element={
+          <div className='app-container'>
+            <h1>System IRK</h1>
+            <LoginForm/>
+          </div>
+        }/>
 
-          <Route path='/register' element={<RegisterForm/>}/>
+        <Route path='/register' element={
+          <div className='app-container'>
+            <h1>System IRK</h1>
+            <RegisterForm/>
+          </div>
+        }/>
 
-          <Route path='/dashboard' element={<Dashboard/>}/>
+        <Route path="/admin/login" element={
+          <div className='app-container'>
+            <h1>System IRK</h1>
+            <AdminLoginForm/>
+          </div>
+        }/>
 
-          <Route path='/courses' element={<CoursesForm/>}/>
+        <Route path='/dashboard' element={
+            <div className='app-container'>
+            <h1>System IRK</h1>
+            <Dashboard/>
+            </div>
+        }/>
 
-          <Route path="/admin/login" element={<AdminLoginForm/>} />
+        <Route path='/courses' element={
+            <div className='app-container'>
+            <h1>System IRK</h1>
+            <CoursesForm/>
+            </div>
+        }/>
 
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin-dashboard" element={
+            <div className='app-container'>
+            <h1>System IRK</h1>
+            <AdminDashboard/>
+            </div>
+        }/>
 
-          <Route path="/admin/courses" element={<AdminCoursesManager />} />
-        </Routes>
-      </div>
+        <Route path="/admin/courses" element={
+            <div className='app-container'>
+            <h1>System IRK</h1>
+            <AdminCoursesManager/>
+            </div>
+        }/>
+
+        <Route path="/results" element={
+          <div className="results-page-container">
+          <h1>System IRK</h1>
+            <ResultsForm />
+          </div>
+        } />
+      </Routes>
     </Router>
   )
 }
 
-export default App
+export default App;

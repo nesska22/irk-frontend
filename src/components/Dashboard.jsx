@@ -39,7 +39,7 @@ function Dashboard() {
         }
 
     return (
-        <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '400px', margin: '20px auto' }}>
+        <div  style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '400px', margin: '20px auto' }}>
             <h2>Witaj w panelu kandydata! 🎉</h2>
             <p>Udało Ci się pomyślnie zalogować do systemu IRK.</p>
             

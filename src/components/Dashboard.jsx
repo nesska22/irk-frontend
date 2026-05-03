@@ -34,6 +34,10 @@ function Dashboard() {
         navigate('/courses');
     };
 
+    const handleGoToResults = () => {
+        navigate('/results');
+    };
+
     if (!user) {
             return null;
         }
@@ -58,6 +62,21 @@ function Dashboard() {
                     }}
                 >
                     Zmień/Wybierz kierunki studiów
+                </button>
+                <button
+                    onClick={handleGoToResults}
+                    style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#1890ff',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        fontWeight: '500'
+                    }}
+                >
+                    Podaj swoje wyniki
                 </button>
 
                 <button 

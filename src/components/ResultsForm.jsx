@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function ResultsForm() {
     const [mandatory, setMandatory] = useState({ "Język polski": '', "Matematyka": '', "Język angielski": '' });
@@ -97,11 +98,19 @@ function ResultsForm() {
                 credentials: 'include',
                 body: JSON.stringify(payload)
             });
-            if (response.ok) alert("Dane zapisane w bazie irk_db!");
+            if (response.ok) alert("Wyniki zostały zapisane!");
+
         } catch (err) {
             alert("Błąd połączenia z backendem");
         }
     };
+
+        const blockInvalidChar = (e) => {
+            if (['-', '+', 'e', 'E', ',', '.'].includes(e.key)) {
+                e.preventDefault();
+            }
+        };
+
 
     const sectionStyle = {
         backgroundColor: '#fff',
@@ -148,6 +157,7 @@ function ResultsForm() {
                                         <input
                                             type="number"
                                             value={mandatory[sub]}
+                                            onKeyDown={blockInvalidChar}
                                             onChange={(e) => handleMandatoryChange(sub, e.target.value)}
                                             style={getErrorStyle(`mandatory-${sub}`)}
                                         />
@@ -172,6 +182,7 @@ function ResultsForm() {
                                         <input
                                             type="number"
                                             value={item.value}
+                                            onKeyDown={blockInvalidChar}
                                             onChange={(e) => handleExtendedChange(index, 'value', e.target.value)}
                                             style={{ ...getErrorStyle(`extended-${index}-val`), flex: 1 }}
                                             placeholder="%"
@@ -203,6 +214,7 @@ function ResultsForm() {
                                         <input
                                             type="number"
                                             value={item.value}
+                                            onKeyDown={blockInvalidChar}
                                             onChange={(e) => handleGradeChange(index, e.target.value)}
                                             style={{ ...getErrorStyle(`grade-${index}`), textAlign: 'center', padding: '8px' }}
                                         />

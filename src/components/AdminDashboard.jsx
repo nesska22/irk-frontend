@@ -1,93 +1,102 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/components/AdminDashboard.jsx
+import { useState } from 'react';
+import AdminCoursesManager from './AdminCoursesManager';
 
 function AdminDashboard() {
-    const navigate = useNavigate();
-        const [admin, setAdmin] = useState(null);
-
-        useEffect(() => {
-                const adminString = localStorage.getItem('currentUser');
-                if (adminString) {
-                    const parsedAdmin = JSON.parse(adminString);
-                    if (parsedAdmin.role === 'ADMIN') {
-                        setAdmin(parsedAdmin);
-                    } else {
-                        navigate('/admin/login');
-                    }
-                } else {
-                    navigate('/admin/login');
-                }
-            }, [navigate]);
-
-    const handleLogout = async () => {
-            try {
-                await fetch('http://localhost:8081/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-            } catch (error) {
-                console.error("Błąd podczas zamykania sesji admina:", error);
-            }
-
-            localStorage.removeItem('currentUser');
-            navigate('/admin/login', { replace: true });
-        };
-
-    if (!admin) return null;
+    const [activeTab, setActiveTab] = useState('courses');
 
     return (
-        <div style={{ padding: '20px', border: '2px solid red' }}>
-            <h2 style={{ color: 'red' }}>Panel Administratora</h2>
-            {admin && admin.role === 'ADMIN' ? (
-                <div>
-                    <p>Zalogowano jako: <strong>{admin.email}</strong></p>
-                    <div style={{
-                            margin: '20px 0',
-                            padding: '15px',
-                            backgroundColor: '#fff5f5',
-                            borderRadius: '8px',
-                            border: '1px solid #ffa39e'
-                        }}>
-                            <h3>Zarządzanie Systemem</h3>
-                            <button
-                                onClick={() => navigate('/admin/courses')}
-                                style={{
-                                    padding: '10px 20px',
-                                    backgroundColor: '#1890ff',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    marginRight: '10px',
-                                    marginLeft: '10px',
-                                    marginTop: '10px'
+        <div className="admin-layout" style={{ 
+            minHeight: '100vh', 
+            backgroundColor: '#f0f2f5', // Nieco ciemniejsze tło dla lepszego kontrastu
+            fontFamily: 'Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+        }}>
+            {/* TOP BAR - Rozciągnięty na całą szerokość */}
+            <nav style={{
+                height: '70px',
+                backgroundColor: '#001529', // Ciemny, profesjonalny kolor (styl Ant Design)
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 50px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                justifyContent: 'space-between',
+                color: 'white'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
+                    <span style={{ 
+                        fontWeight: '800', 
+                        color: '#1890ff', 
+                        fontSize: '24px', 
+                        letterSpacing: '1px' 
+                    }}>IRK PRO</span>
+                    
+                    <div style={{ display: 'flex', gap: '30px' }}>
+                        <button 
+                            onClick={() => setActiveTab('courses')}
+                            style={tabButtonStyle(activeTab === 'courses')}>
+                            Oferta Edukacyjna
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('users')}
+                            style={tabButtonStyle(activeTab === 'users')}>
+                            Zarządzanie Kandydatami
+                        </button>
+                    </div>
+                </div>
 
-                                }}
-                            >
-                                Edytuj Ofertę Edukacyjną
-                            </button>
-                        </div>
-                    <button onClick={handleLogout}
-                    style={{
-                        padding: '10px 20px',
-                        backgroundColor: 'red',
-                        color: 'white',
-                        fontWeight: 'bold',
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 'bold' }}>Administrator</div>
+                        <div style={{ fontSize: '12px', color: '#aaa' }}>admin@admin.com</div>
+                    </div>
+                    <button style={{
+                        padding: '8px 16px',
+                        backgroundColor: 'transparent',
+                        color: '#ff4d4f',
                         border: '1px solid #ff4d4f',
                         borderRadius: '4px',
                         cursor: 'pointer',
-                        fontSize: '14px'
-                        }}
-                    >
-                        Wyloguj Admina
+                        fontWeight: 'bold',
+                        transition: 'all 0.3s'
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#ff4d4f22'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}>
+                        Wyloguj
                     </button>
                 </div>
-            ) : (
-                <p>Brak uprawnień! <button onClick={() => navigate('/admin/login')}>Zaloguj</button></p>
-            )}
+            </nav>
+
+            {/* GŁÓWNA SEKCJA - POWIĘKSZONA */}
+            <main style={{ 
+                padding: '30px 50px', 
+                width: '100%', // Wykorzystujemy 100% szerokości
+                boxSizing: 'border-box' 
+            }}>
+                <div style={{
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    minHeight: '80vh',
+                    padding: '40px'
+                }}>
+                    {activeTab === 'courses' && <AdminCoursesManager />}
+                    {activeTab === 'users' && <h2>Moduł zarządzania kandydatami w przygotowaniu</h2>}
+                </div>
+            </main>
         </div>
     );
 }
+
+const tabButtonStyle = (isActive) => ({
+    background: 'none',
+    border: 'none',
+    borderBottom: isActive ? '3px solid #1890ff' : '3px solid transparent',
+    color: isActive ? '#1890ff' : '#ffffffb3',
+    padding: '23px 0',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: isActive ? 'bold' : '500',
+    transition: 'all 0.2s'
+});
 
 export default AdminDashboard;

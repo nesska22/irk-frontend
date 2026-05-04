@@ -1,68 +1,78 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useNavigate } from "react-router-dom";
+function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-function LoginForm(){
-    const navigate = useNavigate();
+  // TO JEST TA BRAKUJĄCA FUNKCJA:
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
 
-    const [loginData, setLoginData] = useState({
-        email: '',
-        password: ''
-    });
+    try {
+      const response = await fetch('http://localhost:8081/api/admins/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const handleChange = (e) => {
-        setLoginData({
-            ...loginData,
-            [e.target.name]: e.target.value
-        });
-    };
+      if (response.ok) {
+        // Jeśli sukces, lecisz do dashboardu
+        navigate('/admin-dashboard');
+      } else {
+        const msg = await response.text();
+        setError(msg || 'Błędny e-mail lub hasło');
+      }
+    } catch (err) {
+      setError('Błąd połączenia z serwerem. Czy backend działa?');
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  return (
+    <div className="auth-page-wrapper">
+      <div className="auth-card">
+        <h2>System IRK</h2>
+        <p style={{ color: '#666', marginBottom: '20px' }}>Logowanie Administratora</p>
+        
+        {error && <div style={{ color: '#ff4d4f', marginBottom: '15px', fontWeight: '500' }}>{error}</div>}
 
-        console.log("Próba logowania...", loginData);
+        <form className="auth-form" onSubmit={handleLogin}>
+          <div className="auth-input-group">
+            <label>Email:</label>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@admin.com" 
+              required 
+            />
+          </div>
 
-        try {
-            const response = await fetch('http://localhost:8081/api/candidates/login', {
-                method:'POST',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include',
-                body: JSON.stringify(loginData)
-            });
+          <div className="auth-input-group">
+            <label>Hasło:</label>
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••" 
+              required 
+            />
+          </div>
 
-            if(response.ok){
-                const user = await response.json();
+          <button type="submit" className="auth-btn-submit">
+            Zaloguj się
+          </button>
+        </form>
 
-                localStorage.setItem('currentUser', JSON.stringify(user));
-
-                alert(`Witaj z powrotem, ${user.firstName}!`);
-                navigate('/dashboard');
-            } else {
-                alert("Błędny email lub hasło!");
-            }
-        } catch (error) {
-            console.error("Błąd połączenia z serwerem:", error);
-        }
-    };
-
-    return (
-        <div>
-            <h2>Logowanie</h2>
-            <form onSubmit={handleSubmit}>
-                
-                <label>Email:</label>
-                <input type="email" name="email" value={loginData.email} onChange={handleChange} required />
-
-                <label>Hasło:</label>
-                <input type="password" name="password" value={loginData.password} onChange={handleChange} required />
-
-                <button type="submit">Zaloguj się</button>     
-                <button type="button" onClick={() => navigate('/register')} className="link-button">
-                    Nie masz konta? Zarejestruj się
-                </button>
-            </form>
+        <div className="auth-footer">
+          Problem z dostępem? <button type="button">Kontakt z IT</button>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default LoginForm;

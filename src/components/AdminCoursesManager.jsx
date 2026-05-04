@@ -5,8 +5,15 @@ function AdminEducationManager() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [formData, setFormData] = useState({ id: null, name: '', placesLimit: 0 });
-        const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({ 
+        id: null, 
+        name: '', 
+        placesLimit: 0,
+        startDate: '',
+        endDate: '' 
+    });
+    const [isEditing, setIsEditing] = useState(false);
+    const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
 
     const API_URL = 'http://localhost:8081/api/courses';
 
@@ -25,29 +32,49 @@ function AdminEducationManager() {
 
     useEffect(() => { fetchCourses(); }, []);
 
+    const showStatus = (text, type) => {
+        setStatusMsg({ text, type });
+        setTimeout(() => setStatusMsg({ text: '', type: '' }), 4000);
+    };
+
+    // Funkcja pomocnicza do kolorowania statusów (SCRUM-79)
+    const getStatusStyle = (status) => {
+        const base = {
+            padding: '4px 10px',
+            borderRadius: '12px',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap'
+        };
+        switch (status) {
+            case 'AKTYWNY':
+                return { ...base, backgroundColor: '#f6ffed', color: '#52c41a', border: '1px solid #b7eb8f' };
+            case 'PLANOWANY':
+                return { ...base, backgroundColor: '#e6f7ff', color: '#1890ff', border: '1px solid #91d5ff' };
+            case 'ZAKOŃCZONY':
+            case 'BRAK_MIEJSC':
+                return { ...base, backgroundColor: '#fff1f0', color: '#ff4d4f', border: '1px solid #ffccc7' };
+            default:
+                return { ...base, backgroundColor: '#f5f5f5', color: '#8c8c8c', border: '1px solid #d9d9d9' };
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // --- WALIDACJA 1: Liczby w nazwie ---
+        
         if (/\d/.test(formData.name)) {
-            alert("Błąd: Nazwa kierunku nie może zawierać cyfr.");
+            showStatus("Nazwa kierunku nie może zawierać cyfr.", "error");
             return;
         }
-
-        // --- WALIDACJA 2: Limit miejsc > 0 ---
         if (formData.placesLimit <= 0) {
-            alert("Błąd: Limit miejsc musi być większy od 0.");
+            showStatus("Limit miejsc musi być większy od 0.", "error");
+            return;
+        }
+        if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+            showStatus("Data zakończenia musi być późniejsza niż rozpoczęcia.", "error");
             return;
         }
 
-        // --- WALIDACJA 3: Unikalność nazwy ---
-        const nameExists = courses.some(c =>
-            c.name.toLowerCase() === formData.name.toLowerCase() && c.id !== formData.id
-        );
-
-        if (nameExists) {
-            alert(`Błąd: Kierunek o nazwie "${formData.name}" już istnieje w systemie.`);
-            return;
-        }
         const method = isEditing ? 'PUT' : 'POST';
         const url = isEditing ? `${API_URL}/${formData.id}` : API_URL;
 
@@ -62,174 +89,135 @@ function AdminEducationManager() {
             if (response.ok) {
                 fetchCourses();
                 resetForm();
-                alert(isEditing ? "Zaktualizowano kierunek!" : "Dodano nowy kierunek!");
+                showStatus(isEditing ? "Zaktualizowano pomyślnie!" : "Dodano nowy kierunek!", "success");
             }
         } catch (err) {
-            alert("Błąd zapisu: " + err.message);
+            showStatus("Błąd zapisu: " + err.message, "error");
         }
     };
 
     const handleDelete = async (id) => {
         if (!window.confirm("Czy na pewno chcesz usunąć ten kierunek?")) return;
-
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
             if (response.ok) {
-                alert("Kierunek został usunięty pomyślnie!");
+                showStatus("Kierunek został usunięty.", "success");
                 fetchCourses();
-            } else {
-                alert("Nie udało się usunąć kierunku.");
-            }} catch (err) {
-                alert("Błąd usuwania: " + err.message);
             }
+        } catch (err) {
+            showStatus("Błąd usuwania: " + err.message, "error");
+        }
     };
 
     const resetForm = () => {
-        setFormData({ id: null, name: '', placesLimit: 0 });
+        setFormData({ id: null, name: '', placesLimit: 0, startDate: '', endDate: '' });
         setIsEditing(false);
     };
 
     const startEdit = (course) => {
         setFormData(course);
         setIsEditing(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    if (loading) return <div>Ładowanie panelu administratora...</div>;
+    if (loading) return <div style={{ padding: '50px', textAlign: 'center' }}>Ładowanie danych...</div>;
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Arial' }}>
-            <h2>Panel Administratora: Oferta Edukacyjna</h2>
+        <div style={{ width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                <h1 style={{ margin: 0, color: '#1f1f1f', fontSize: '28px' }}>Zarządzanie Ofertą Edukacyjną</h1>
+                {statusMsg.text && (
+                    <div style={{
+                        padding: '10px 20px', borderRadius: '6px',
+                        backgroundColor: statusMsg.type === 'success' ? '#f6ffed' : '#fff1f0',
+                        color: statusMsg.type === 'success' ? '#52c41a' : '#ff4d4f',
+                        border: `1px solid ${statusMsg.type === 'success' ? '#b7eb8f' : '#ffccc7'}`,
+                        fontWeight: '600'
+                    }}>
+                        {statusMsg.text}
+                    </div>
+                )}
+            </div>
 
-            {/* FORMULARZ EDYCJI/DODAWANIA */}
-            <div style={{ backgroundColor: '#f0f2f5', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-                <h3>{isEditing ? 'Edytuj kierunek' : 'Dodaj nowy kierunek'}</h3>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Nazwa kierunku"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        style={{ width: '100%', padding: '8px', marginBottom: '10px', marginTop: '20px'}}
-                        required
-                    />
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Limit miejsc:</label>
-                    <input
-                        type="number"
-                        placeholder="0"
-                        value={formData.placesLimit}
-                        onChange={(e) => setFormData({...formData, placesLimit: parseInt(e.target.value)})}
-                        style={{ width: '100%', padding: '8px', marginBottom: '8px', boxSizing: 'border-box' }}
-                        required
-                    />
-                    <button
-                        type="submit"
-                        style={{
-                            backgroundColor: '#52c41a',
-                            color: 'white',
-                            border: 'none',
-                            padding: '10px 20px',
-                            cursor: 'pointer',
-                            borderRadius: '4px',
-                            fontWeight: 'bold',
-                            transition: 'background-color 0.3s ease'
-                        }}
-                        onMouseOver={(e) => e.target.style.backgroundColor = '#73d13d'}
-                        onMouseOut={(e) => e.target.style.backgroundColor = '#52c41a'}
-                    >
-                        {isEditing ? 'Zapisz zmiany' : 'Dodaj kierunek'}
-                    </button>
-                    {isEditing && <button onClick={resetForm}
-                    style={{
-                      padding: '10px 20px',
-                      backgroundColor: 'transparent',
-                      color: '#595959',
-                      border: '1px solid #d9d9d9',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.3s'
-                  }}
-                  onMouseOver={(e) => {
-                      e.target.style.color = '#40a9ff';
-                      e.target.style.borderColor = '#40a9ff';
-                  }}
-                  onMouseOut={(e) => {
-                      e.target.style.color = '#595959';
-                      e.target.style.borderColor = '#d9d9d9';
-                  }}>Anuluj</button>}
+            {/* FORMULARZ */}
+            <div style={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '12px', border: '1px solid #e8e8e8', marginBottom: '40px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '20px' }}>{isEditing ? '📝 Edytuj dane' : '➕ Dodaj kierunek'}</h3>
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '20px', alignItems: 'end' }}>
+                    <div>
+                        <label style={labelStyle}>Nazwa</label>
+                        <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} style={inputStyle} required />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Limit</label>
+                        <input type="number" value={formData.placesLimit} onChange={(e) => setFormData({...formData, placesLimit: parseInt(e.target.value) || 0})} style={inputStyle} required />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Początek</label>
+                        <input type="date" value={formData.startDate} onChange={(e) => setFormData({...formData, startDate: e.target.value})} style={inputStyle} required />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Koniec</label>
+                        <input type="date" value={formData.endDate} onChange={(e) => setFormData({...formData, endDate: e.target.value})} style={inputStyle} required />
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button type="submit" style={isEditing ? saveBtnStyle : addBtnStyle}>{isEditing ? 'Zapisz' : 'Dodaj'}</button>
+                        {isEditing && <button type="button" onClick={resetForm} style={cancelBtnStyle}>Anuluj</button>}
+                    </div>
                 </form>
             </div>
 
-            {/* LISTA KIERUNKÓW Z OPCJAMI EDYCJI */}
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr style={{
-                        borderBottom: '2px solid #ddd',
-                        textAlign: 'center'
-                    }}>
-                        <th style={{ padding: '10px' }}>ID</th>
-                        <th style={{ padding: '10px' }}>Nazwa</th>
-                        <th style={{ padding: '10px' }}>Limit miejsc</th>
-                        <th style={{ padding: '10px' }}>Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {courses.map(course => (
-                        <tr key={course.id} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '10px' }}>{course.id}</td>
-                            <td><strong>{course.name}</strong></td>
-                            <td><strong>{course.placesLimit}</strong></td>
-                            <td style={{ padding: '10px', display: 'flex', gap: '8px' }}>
-                                <button
-                                    onClick={() => startEdit(course)}
-                                    style={{
-                                        padding: '6px 12px',
-                                        backgroundColor: '#1890ff',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                        transition: 'all 0.3s',
-                                        boxShadow: '0 2px 0 rgba(5, 145, 255, 0.1)'
-                                    }}
-                                    onMouseOver={(e) => e.target.style.backgroundColor = '#40a9ff'}
-                                    onMouseOut={(e) => e.target.style.backgroundColor = '#1890ff'}
-                                >
-                                    Edytuj
-                                </button>
-
-                                <button
-                                    onClick={() => handleDelete(course.id)}
-                                    style={{
-                                        padding: '6px 12px',
-                                        backgroundColor: '#ff4d4f',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                        transition: 'all 0.3s',
-                                        boxShadow: '0 2px 0 rgba(255, 38, 5, 0.06)'
-                                    }}
-                                    onMouseOver={(e) => e.target.style.backgroundColor = '#ff7875'}
-                                    onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
-                                >
-                                    Usuń
-                                </button>
-                            </td>
+            {/* TABELA */}
+            <div style={{ backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e8e8e8', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr style={{ backgroundColor: '#fafafa', borderBottom: '2px solid #f0f0f0' }}>
+                            <th style={thStyle}>ID</th>
+                            <th style={thStyle}>Nazwa</th>
+                            <th style={thStyle}>Limit</th>
+                            <th style={thStyle}>Data rozpoczęcia</th>
+                            <th style={thStyle}>Data zakończenia</th>
+                            <th style={thStyle}>Status</th> 
+                            <th style={thStyle}>Akcje</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {courses.map(course => (
+                            <tr key={course.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                <td style={tdStyle}>{course.id}</td>
+                                <td style={{ ...tdStyle, fontWeight: '600' }}>{course.name}</td>
+                                <td style={tdStyle}>{course.placesLimit}</td>
+                                <td style={tdStyle}>{course.startDate}</td>
+                                <td style={tdStyle}>{course.endDate}</td>
+                                <td style={tdStyle}>
+                                    <span style={getStatusStyle(course.status)}>
+                                        {course.status ? course.status.replace('_', ' ') : 'NIEZNANY'}
+                                    </span>
+                                </td>
+                                <td style={tdStyle}>
+                                    <button onClick={() => startEdit(course)} style={actionBtnEdit}>Edytuj</button>
+                                    <button onClick={() => handleDelete(course.id)} style={actionBtnDelete}>Usuń</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
+
+// STYLE BEZ ZMIAN (labelStyle, inputStyle, thStyle, tdStyle, addBtnStyle, saveBtnStyle, cancelBtnStyle, actionBtnEdit, actionBtnDelete)
+const labelStyle = { display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: '600', color: '#555' };
+const inputStyle = { width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #d9d9d9', fontSize: '14px' };
+const thStyle = { padding: '16px', textAlign: 'left', color: '#8c8c8c', fontSize: '13px', textTransform: 'uppercase' };
+const tdStyle = { padding: '16px', color: '#262626', fontSize: '14px' };
+const addBtnStyle = { backgroundColor: '#52c41a', color: 'white', border: 'none', padding: '11px 20px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', flex: 1 };
+const saveBtnStyle = { backgroundColor: '#1890ff', color: 'white', border: 'none', padding: '11px 20px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', flex: 1 };
+const cancelBtnStyle = { backgroundColor: '#fff', border: '1px solid #d9d9d9', padding: '11px 20px', borderRadius: '6px', cursor: 'pointer' };
+const actionBtnEdit = { background: 'none', border: 'none', color: '#1890ff', cursor: 'pointer', marginRight: '15px', fontWeight: '600' };
+const actionBtnDelete = { background: 'none', border: 'none', color: '#ff4d4f', cursor: 'pointer', fontWeight: '600' };
 
 export default AdminEducationManager;

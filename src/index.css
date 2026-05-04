@@ -1,52 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* 2. RESET I USTAWIENIA GLOBALNE */
+/* 1. RESET I USTAWIENIA BAZOWE */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif; 
+  font-family: 'Inter', sans-serif;
 }
 
-/* 3. TŁO I CENTROWANIE CAŁEJ STRONY (FLEXBOX MAGIC) */
-body {
-  background-color: #f4f7f6; 
-  color: #333333; 
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Jasnoszare tło typowe dla dashboardów */
+  color: #333;
+  display: block; /* Usuwamy flex z body, żeby nie centrował wszystkiego */
+}
+
+/* 2. KONTENER APLIKACJI - TERAZ ELASTYCZNY */
+.app-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 3. STYL KARTY (używaj tylko dla logowania/rejestracji) */
+/* Jeśli masz formularz logowania, owiń go w div z tą klasą */
+.auth-wrapper {
   display: flex;
   justify-content: center;
-  align-items: center; 
-  min-height: 100vh; 
+  align-items: center;
+  min-height: 100vh;
 }
 
-/* 4. GŁÓWNY KONTENER APLIKACJI (KARTA) */
-.app-container {
+.auth-card {
   background-color: #ffffff;
   padding: 40px;
-  border-radius: 12px; 
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 450px; 
+  max-width: 450px;
   text-align: center;
 }
 
-h1, h2 {
-  color: #1a1a1a;
-  margin-bottom: 24px;
-}
-
-/* 5. STYLE FORMULARZA I PÓL TEKSTOWYCH */
+/* 4. REUSE-OWALNE STYLE FORMULARZY (zostawiamy, bo są ładne) */
 form {
   display: flex;
   flex-direction: column;
-  gap: 15px; 
-  text-align: left; 
+  gap: 15px;
+  text-align: left;
 }
 
 label {
   font-size: 14px;
   font-weight: 500;
   color: #555;
-  margin-bottom: -10px; 
+  margin-bottom: -5px;
 }
 
 input {
@@ -55,52 +63,134 @@ input {
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 15px;
-  transition: border-color 0.3s ease; 
+  transition: all 0.3s ease;
 }
 
-/* Efekt po kliknięciu w okienko tekstowe */
 input:focus {
   outline: none;
   border-color: #0056b3;
   box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
 }
 
-/* 6. STYLE PRZYCISKÓW */
-button[type="submit"] {
-  background-color: #0056b3; 
+button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #0056b3;
   color: white;
   border: none;
   padding: 14px;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s ease; 
 }
 
-button[type="submit"]:hover {
+.btn-primary:hover {
   background-color: #004494;
 }
 
-/* Klasa dla przycisków typu "przejdź do logowania/rejestracji" */
-.link-button {
-  background: none;
-  border: none;
-  color: #0056b3;
-  cursor: pointer;
+/* --- STYLE DLA LOGOWANIA I REJESTRACJI --- */
+
+/* Kontener na całą stronę - centruje kartę na środku ekranu */
+.auth-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f0f2f5; /* Delikatne szare tło */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* Karta logowania/rejestracji */
+.auth-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* Tutaj pilnujemy, żeby nie była za szeroka */
+  text-align: center;
+}
+
+.auth-card h2 {
+  margin-bottom: 24px;
+  color: #1a1a1a;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* Style formularza wewnątrz karty */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-input-group {
+  text-align: left;
+}
+
+.auth-input-group label {
+  display: block;
+  margin-bottom: 8px;
   font-size: 14px;
   font-weight: 500;
-  margin-top: 5px;
+  color: #555;
 }
 
-.link-button:hover {
+.auth-card input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.auth-btn-submit {
+  width: 100%;
+  padding: 12px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.auth-btn-submit:hover {
+  background-color: #40a9ff;
+}
+
+.auth-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.auth-footer button {
+  background: none;
+  border: none;
+  color: #1890ff;
+  font-weight: 600;
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+.auth-footer button:hover {
   text-decoration: underline;
-}
-
-/* Komunikaty o błędach w formularzu */
-.error-text {
-  color: #dc3545; 
-  font-size: 12px;
-  margin-top: -10px;
 }

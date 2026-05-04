@@ -34,12 +34,16 @@ function Dashboard() {
         navigate('/courses');
     };
 
+    const handleGoToResults = () => {
+        navigate('/results');
+    };
+
     if (!user) {
             return null;
         }
 
     return (
-        <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '400px', margin: '20px auto' }}>
+        <div  style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', maxWidth: '400px', margin: '20px auto' }}>
             <h2>Witaj w panelu kandydata! 🎉</h2>
             <p>Udało Ci się pomyślnie zalogować do systemu IRK.</p>
             
@@ -58,6 +62,21 @@ function Dashboard() {
                     }}
                 >
                     Zmień/Wybierz kierunki studiów
+                </button>
+                <button
+                    onClick={handleGoToResults}
+                    style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#1890ff',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        fontWeight: '500'
+                    }}
+                >
+                    Podaj swoje wyniki
                 </button>
 
                 <button 

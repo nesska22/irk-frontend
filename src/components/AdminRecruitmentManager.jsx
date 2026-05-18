@@ -297,7 +297,7 @@ function AdminRecruitmentManager() {
                                             border: `1px solid ${rec.isActive ? '#b7eb8f' : '#ffa39e'}`,
                                             display: 'inline-block'
                                         }}>
-                                            {rec.isActive ? 'AKTYWNA' : 'OFF'}
+                                            {rec.isActive ? 'AKTYWNA' : 'NIEAKTYWNA'}
                                         </span>
                                     </td>
 

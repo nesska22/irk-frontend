@@ -93,7 +93,7 @@ function CandidatesList() {
                 <table className="candidates-table">
                     <thead>
                         <tr>
-                            <th className="col-rank">ID Zgłoszenia</th>
+                            <th className="col-rank">ID</th>
                             <th>Imię i Nazwisko</th>
                             <th>Email</th>
                             <th className="col-status">Status</th>

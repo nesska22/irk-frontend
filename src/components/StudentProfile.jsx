@@ -26,19 +26,19 @@ function StudentProfile() {
 
         const fetchData = async () => {
             try {
-                // Pobierz aplikacje
-                const appRes = await fetch('http://localhost:8081/api/applications/my', {
-                    credentials: 'include'
-                });
-                if (appRes.ok) {
-                    setMyApplications(await appRes.json());
-                }
+                    const appRes = await fetch('http://localhost:8081/api/applications/my', {
+                        credentials: 'include'
+                    });
+                    if (appRes.ok) {
+                        setMyApplications(await appRes.json());
+                    }
 
-                // Pobierz wyniki egzaminów
-                const storedResults = localStorage.getItem('candidateResults');
-                if (storedResults) {
-                    setResults(JSON.parse(storedResults));
-                }
+                    const resultsRes = await fetch('http://localhost:8081/api/results/my', {
+                        credentials: 'include'
+                    });
+                    if (resultsRes.ok) {
+                        setResults(await resultsRes.json());
+                    }
             } catch (err) {
                 console.error("Błąd pobierania danych", err);
             } finally {

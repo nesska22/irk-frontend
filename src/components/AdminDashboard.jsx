@@ -33,7 +33,7 @@ function AdminDashboard() {
                 credentials: 'include'
             });
         } catch (error) {
-            console.error("Błąd podczas zamykania sesji admina:", error);
+            console.error("Błąd podczas wylogowania:", error);
         }
 
         localStorage.removeItem('currentUser');
@@ -42,248 +42,112 @@ function AdminDashboard() {
 
     if (!admin) return null;
 
-    const containerStyle = {
-            maxWidth: '1200px',
-            width: '95%',
-            margin: '40px auto',
-            padding: '0 20px',
-            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-        };
-
-    const welcomeCardStyle = {
-        backgroundColor: '#fff',
-        padding: '30px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-        textAlign: 'center',
-        marginBottom: '30px',
-        border: '1px solid #f0f0f0'
-    };
-
-    const gridStyle = {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '20px',
-            width: '100%'
-        };
-
-    const mobileGridStyle = window.innerWidth < 900
-        ? { gridTemplateColumns: '1fr' }
-        : {};
-
-    const actionCardStyle = {
-        backgroundColor: '#fff',
-        padding: '25px',
-        borderRadius: '12px',
-        border: '1px solid #e8e8e8',
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        transition: 'transform 0.2s ease',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-    };
-
-    const buttonStyle = (isPrimary) => ({
-        padding: '12px 20px',
-        backgroundColor: isPrimary ? '#1890ff' : 'transparent',
-        color: isPrimary ? 'white' : '#ff4d4f',
-        border: isPrimary ? 'none' : '1px solid #ff4d4f',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontSize: '15px',
-        fontWeight: '600',
-        marginTop: '20px',
-        width: '100%'
-    });
-
     return (
-        <div style={containerStyle}>
-            {/* Header */}
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '30px',
-                    paddingBottom: '10px',
-                    borderBottom: '1px solid #e8e8e8'
-                }}
-            >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div
-                        style={{
-                            width: '4px',
-                            height: '24px',
-                            backgroundColor: '#1890ff',
-                            borderRadius: '2px'
-                        }}
-                    ></div>
+        <div className="admin-dashboard-container">
 
-                    <h1
-                        style={{
-                            fontSize: '24px',
-                            fontWeight: '600',
-                            color: '#434343',
-                            margin: 0,
-                            letterSpacing: '-0.5px'
-                        }}
-                    >
+            {/* HEADER */}
+            <div className="admin-header">
+                <div className="admin-header-group">
+                    <div className="admin-header-bar"></div>
+                    <h1 className="admin-header-title">
                         Panel Administratora
                     </h1>
                 </div>
 
                 <button
                     onClick={handleLogout}
-                    style={{
-                        ...buttonStyle(false),
-                        padding: '8px 15px',
-                        fontSize: '14px',
-                        marginTop: 0,
-                        width: 'auto'
-                    }}
+                    className="admin-btn-logout"
                 >
                     Wyloguj się
                 </button>
             </div>
 
-            {/* Powitanie */}
-            <div style={welcomeCardStyle}>
-                <h2 style={{ color: '#1890ff', marginBottom: '10px' }}>
+            {/* POWITANIE */}
+            <div className="admin-welcome-card">
+                <h2>
                     Witaj, {admin.firstName + ' ' + admin.lastName}! 🎉
                 </h2>
 
-                <p style={{ color: '#666', fontSize: '16px' }}>
+                <p>
                     Jesteś zalogowany jako administrator. Zarządzaj systemem poniżej.
                 </p>
             </div>
 
-            {/* Karty */}
-            <div style={{ ...gridStyle, ...mobileGridStyle }}>
+            {/* GRID KART */}
+            <div className="admin-grid">
 
                 {/* KARTA 1 */}
-                <div
-                    className="dashboard-card"
-                    style={actionCardStyle}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                >
+                <div className="admin-card">
                     <div>
-                        <div style={{ fontSize: '50px', marginBottom: '15px' }}>📚</div>
+                        <div className="admin-card-icon">📚</div>
 
-                        <h3 style={{ margin: '0 0 10px 0', fontSize: '20px' }}>
-                            Zarządzanie Kierunkami
-                        </h3>
+                        <h3>Zarządzanie Kierunkami</h3>
 
-                        <p
-                            style={{
-                                color: '#888',
-                                fontSize: '14px',
-                                lineHeight: '1.5'
-                            }}
-                        >
+                        <p>
                             Edytuj ofertę edukacyjną i dostępne kierunki.
                         </p>
                     </div>
 
                     <button
                         onClick={() => navigate('/admin/courses')}
-                        style={buttonStyle(true)}
+                        className="admin-btn-primary"
                     >
                         Przejdź do kierunków
                     </button>
                 </div>
 
                 {/* KARTA 2 */}
-                <div
-                    className="dashboard-card"
-                    style={actionCardStyle}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                >
+                <div className="admin-card">
                     <div>
-                        <div style={{ fontSize: '50px', marginBottom: '15px' }}>👥</div>
+                        <div className="admin-card-icon">👥</div>
 
-                        <h3 style={{ margin: '0 0 10px 0', fontSize: '20px' }}>
-                            Zarządzanie Kandydatami
-                        </h3>
+                        <h3>Zarządzanie Kandydatami</h3>
 
-                        <p
-                            style={{
-                                color: '#888',
-                                fontSize: '14px',
-                                lineHeight: '1.5'
-                            }}
-                        >
+                        <p>
                             Przeglądaj i zarządzaj kandydatami oraz ich zgłoszeniami.
                         </p>
                     </div>
 
                     <button
-                        className="btn-dashboard btn-primary"
                         onClick={() => navigate('/admin/recruitments-list')}
+                        className="admin-btn-primary"
                     >
                         Zarządzaj kandydatami
                     </button>
                 </div>
 
                 {/* KARTA 3 */}
-                <div
-                    className="dashboard-card"
-                    style={actionCardStyle}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-5px)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                >
+                <div className="admin-card">
                     <div>
-                        <div style={{ fontSize: '50px', marginBottom: '15px' }}>🖥️</div>
+                        <div className="admin-card-icon">🖥️</div>
 
-                        <h3 style={{ margin: '0 0 10px 0', fontSize: '20px' }}>
-                            Zarządzanie Rekrutacją
-                        </h3>
+                        <h3>Zarządzanie Rekrutacją</h3>
 
-                        <p
-                            style={{
-                                color: '#888',
-                                fontSize: '14px',
-                                lineHeight: '1.5'
-                            }}
-                        >
-                            Twórz rekrutację na dany kierunek
+                        <p>
+                            Twórz rekrutację na dany kierunek.
                         </p>
                     </div>
 
                     <button
                         onClick={() => navigate('/admin/recruitments')}
-                        style={buttonStyle(true)}
+                        className="admin-btn-primary"
                     >
                         Zarządzaj rekrutacjami
                     </button>
                 </div>
+
             </div>
 
-            {/* Footer */}
-            <div
-                style={{
-                    marginTop: '50px',
-                    textAlign: 'center',
-                    color: '#999',
-                    fontSize: '14px'
-                }}
-            >
+            {/* FOOTER */}
+            <div style={{
+                marginTop: '50px',
+                textAlign: 'center',
+                color: '#999',
+                fontSize: '14px'
+            }}>
                 <p>W razie problemów skontaktuj się z działem IT.</p>
             </div>
+
         </div>
     );
 }

@@ -109,40 +109,7 @@ function RecruitmentForm() {
                 )}
             </div>
 
-            {/* SEKCJA: MOJE APLIKACJE (HISTORIA) */}
-            <hr style={{ border: 'none', borderTop: '2px dashed #eee', marginBottom: '30px' }} />
 
-            <h2>Moje Zgłoszenia</h2>
-            {myApplications.length === 0 ? (
-                <p style={{ color: '#999' }}>Nie złożyłeś jeszcze żadnej aplikacji.</p>
-            ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                    <thead>
-                        <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#fafafa', textAlign: 'left' }}>
-                            <th style={{ padding: '12px 15px' }}>ID Zgłoszenia</th>
-                            <th style={{ padding: '12px 15px' }}>Rekrutacja</th>
-                            <th style={{ padding: '12px 15px' }}>Data Złożenia</th>
-                            <th style={{ padding: '12px 15px' }}>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {myApplications.map(app => (
-                            <tr key={app.id} style={{ borderBottom: '1px solid #eee' }}>
-                                <td style={{ padding: '12px 15px', fontWeight: 'bold', color: '#555' }}>#{app.id}</td>
-                                <td style={{ padding: '12px 15px' }}>{app.recruitment.name}</td>
-                                <td style={{ padding: '12px 15px', fontSize: '14px', color: '#777' }}>
-                                    {new Date(app.createdAt).toLocaleString('pl-PL')}
-                                </td>
-                                <td style={{ padding: '12px 15px' }}>
-                                    <span style={{ backgroundColor: '#e6f7ff', color: '#1890ff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>
-                                        {app.status}
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
         </div>
     );
 }

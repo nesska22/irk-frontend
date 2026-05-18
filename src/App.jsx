@@ -12,6 +12,7 @@ import AdminRecruitmentManager from './components/AdminRecruitmentManager';
 import CandidatesList from './components/CandidatesList';
 import RecruitmentForm from './components/RecruitmentForm';
 import RecruitmentList from './components/RecruitmentList';
+import StudentProfile from './components/StudentProfile';
 
 function App() {
   return (
@@ -49,6 +50,15 @@ function App() {
             </div>
         }/>
 
+        <Route path="/profile" element={
+            <div className='dashboard-wrapper'>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <span className="irk-logo">System IRK</span>
+                </div>
+                <StudentProfile />
+            </div>
+        } />
+
         <Route path='/recruitments' element={
             <div className='results-page-container'>
                 <span className="irk-logo">System IRK</span>
@@ -62,6 +72,8 @@ function App() {
             <EducationalOffer/>
             </div>
         }/>
+
+
 
         <Route path="/admin-dashboard" element={
             <div className='dashboard-wrapper'>
@@ -104,6 +116,8 @@ function App() {
         }/>
       </Routes>
     </Router>
+
+
   )
 }
 

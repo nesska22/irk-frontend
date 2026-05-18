@@ -98,7 +98,11 @@ function ResultsForm() {
                 credentials: 'include',
                 body: JSON.stringify(payload)
             });
-            if (response.ok) alert("Wyniki zostały zapisane!");
+            if (response.ok) {
+                // Zapisz wyniki w localStorage
+                localStorage.setItem('candidateResults', JSON.stringify(payload));
+                alert("Wyniki zostały zapisane!");
+            }
 
         } catch (err) {
             alert("Błąd połączenia z backendem");

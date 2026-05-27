@@ -198,6 +198,8 @@ function StudentProfile() {
                                     <th style={{ padding: '12px 15px', fontWeight: '600', color: '#333' }}>ID</th>
                                     <th style={{ padding: '12px 15px', fontWeight: '600', color: '#333' }}>Rekrutacja</th>
                                     <th style={{ padding: '12px 15px', fontWeight: '600', color: '#333' }}>Data Złożenia</th>
+                                    {/* NOWA KOLUMNA */}
+                                    <th style={{ padding: '12px 15px', fontWeight: '600', color: '#333', textAlign: 'center' }}>Punkty</th>
                                     <th style={{ padding: '12px 15px', fontWeight: '600', color: '#333' }}>Status</th>
                                 </tr>
                             </thead>
@@ -208,6 +210,10 @@ function StudentProfile() {
                                         <td style={{ padding: '12px 15px', color: '#333' }}>{app.recruitment?.name || 'N/A'}</td>
                                         <td style={{ padding: '12px 15px', fontSize: '14px', color: '#777' }}>
                                             {new Date(app.createdAt).toLocaleString('pl-PL')}
+                                        </td>
+                                        {/* NOWE POLE */}
+                                        <td style={{ padding: '12px 15px', textAlign: 'center', fontWeight: 'bold', color: '#1890ff', fontSize: '15px' }}>
+                                            {app.points !== null ? app.points : '0'} pkt
                                         </td>
                                         <td style={{ padding: '12px 15px' }}>
                                             <span style={{

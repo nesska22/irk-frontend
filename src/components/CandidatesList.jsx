@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 function CandidatesList() {
     const navigate = useNavigate();
-    // Pobieramy ID rekrutacji z adresu (np. /admin/candidates/3)
     const { recruitmentId } = useParams();
 
     const [applications, setApplications] = useState([]);
@@ -13,17 +12,20 @@ function CandidatesList() {
     useEffect(() => {
         const fetchApplications = async () => {
             try {
-                // Zapytanie do backendu o aplikacje dla DANEJ rekrutacji
                 const response = await fetch(`http://localhost:8081/api/applications/recruitment/${recruitmentId}`, {
                     credentials: 'include'
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    setApplications(data);
-                    // Pobranie nazwy rekrutacji z pierwszego zgłoszenia (jeśli są)
-                    if(data.length > 0 && data[0].recruitment) {
-                        setRecruitmentName(data[0].recruitment.name);
+
+                    // SORTOWANIE RANKINGOWE: Od najwyższego wyniku do najniższego
+                    const sortedData = data.sort((a, b) => (b.points || 0) - (a.points || 0));
+
+                    setApplications(sortedData);
+
+                    if(sortedData.length > 0 && sortedData[0].recruitment) {
+                        setRecruitmentName(sortedData[0].recruitment.name);
                     } else {
                         setRecruitmentName("Wybrana rekrutacja (Brak kandydatów)");
                     }
@@ -42,12 +44,11 @@ function CandidatesList() {
     }, [recruitmentId]);
 
     const getStatusStyle = (status) => {
-        // Tu możesz dostosować statusy do swoich z tabeli Application
         switch (status) {
             case "ZAKWALIFIKOWANY": return { backgroundColor: '#f6ffed', color: '#52c41a', border: '1px solid #b7eb8f' };
             case "LISTA REZERWOWA": return { backgroundColor: '#fff7e6', color: '#faad14', border: '1px solid #ffe58f' };
             case "ODRZUCONY": return { backgroundColor: '#fff1f0', color: '#f5222d', border: '1px solid #ffa39e' };
-            default: return { backgroundColor: '#e6f7ff', color: '#1890ff', border: '1px solid #91d5ff' }; // np. ZŁOŻONA
+            default: return { backgroundColor: '#e6f7ff', color: '#1890ff', border: '1px solid #91d5ff' };
         }
     };
 
@@ -93,21 +94,30 @@ function CandidatesList() {
                 <table className="candidates-table">
                     <thead>
                         <tr>
-                            <th className="col-rank">ID</th>
+                            <th className="col-rank" style={{ width: '60px' }}>Poz.</th>
                             <th>Imię i Nazwisko</th>
                             <th>Email</th>
+                            {/* NOWA KOLUMNA */}
+                            <th style={{ textAlign: 'center' }}>Punkty</th>
                             <th className="col-status">Status</th>
                             <th className="col-actions">Akcje</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {applications.map((app) => (
+                        {applications.map((app, index) => (
                             <tr key={app.id} className="table-row-hover">
-                                <td className="col-rank" style={{ fontWeight: 'bold', color: '#595959' }}>
-                                    #{app.id}
+                                {/* ZMIANA: Zamiast ID wyświetlamy pozycję w rankingu */}
+                                <td className="col-rank" style={{ fontWeight: 'bold', color: '#595959', textAlign: 'center' }}>
+                                    {index + 1}
                                 </td>
                                 <td style={{ fontWeight: '500' }}>{app.candidate.firstName} {app.candidate.lastName}</td>
                                 <td style={{ color: '#8c8c8c', fontSize: '13px' }}>{app.candidate.email}</td>
+
+                                {/* NOWE POLE: WYNIK PUNKTOWY */}
+                                <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#1890ff', fontSize: '15px' }}>
+                                    {app.points !== null ? app.points : '0'} pkt
+                                </td>
+
                                 <td className="col-status">
                                     <span style={{
                                         display: 'inline-block',
@@ -115,7 +125,7 @@ function CandidatesList() {
                                         borderRadius: '20px',
                                         fontSize: '12px',
                                         fontWeight: '600',
-                                        ...getStatusStyle(app.status.toUpperCase())
+                                        ...getStatusStyle(app.status?.toUpperCase() || "ZŁOŻONA")
                                     }}>
                                         {app.status}
                                     </span>
@@ -127,7 +137,7 @@ function CandidatesList() {
                         ))}
                         {applications.length === 0 && (
                             <tr>
-                                <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+                                <td colSpan="6" style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
                                     Brak kandydatów w tej rekrutacji.
                                 </td>
                             </tr>

@@ -60,7 +60,7 @@ function Dashboard() {
                     <div>
                         <div className="action-card-icon">🎓</div>
                         <h3>Aktualne Nabory</h3>
-                        <p>Wybierz interesujące Cię kierunki i złóż nma nie aplikacje.</p>
+                        <p>Wybierz interesujące Cię kierunki i złóż na nie aplikacje.</p>
                     </div>
                     <button onClick={() => navigate('/recruitments')} className="btn-dashboard btn-primary">
                         Przejdź do rekrutacji

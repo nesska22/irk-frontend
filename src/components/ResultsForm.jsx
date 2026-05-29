@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 function ResultsForm() {
+    const navigate = useNavigate();
     const [mandatory, setMandatory] = useState({ "Język polski": '', "Matematyka": '', "Język angielski": '' });
     const [extended, setExtended] = useState([{ subject: '', value: '' }]);
 
@@ -135,11 +136,30 @@ function ResultsForm() {
     });
 
     return (
-        <div style={{ padding: '20px', boxSizing: 'border-box' }}>
-            <div style={{ textAlign: 'center', marginBottom: '30px'}}>
-                <p style={{ fontSize: '18px', color: '#666', fontWeight: '500' }}>
-                    Wprowadź wyniki egzaminów maturalnych i oceny ze świadectwa.
-                </p>
+        <div style={{ padding: '20px', boxSizing: 'border-box', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '30px',
+                width: '100%'
+            }}>
+                <div style={{ flex: '1', textAlign: 'left' }}>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/dashboard')}
+                        className="profile-back-button"
+                        title="Wróć do dashboardu"
+                    >
+                        Powrót
+                    </button>
+                </div>
+                <div style={{ flex: '2', textAlign: 'center' }}>
+                    <span style={{ fontSize: '16px', color: '#666', fontWeight: '500' }}>
+                        Wprowadź wyniki egzaminów maturalnych i oceny ze świadectwa.
+                    </span>
+                </div>
+                <div style={{ flex: '1' }}></div>
             </div>
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <div style={{

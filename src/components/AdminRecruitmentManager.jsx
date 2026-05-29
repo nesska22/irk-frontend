@@ -97,21 +97,19 @@ function AdminRecruitmentManager() {
     };
 
     const startEdit = (rec) => {
-        const assignedCourse = courses.find(c => c.recruitment && c.recruitment.id === rec.id);
         setFormData({
             id: rec.id,
             name: rec.name,
             startDate: rec.startDate,
             endDate: rec.endDate,
             isActive: rec.isActive,
-            courseId: assignedCourse ? assignedCourse.id : ''
+            courseId: rec.course ? rec.course.id : ''
         });
         setIsEditing(true);
     };
 
-    const getAssignedCourseName = (recId) => {
-        const assignedCourse = courses.find(c => c.recruitment && c.recruitment.id === recId);
-        return assignedCourse ? assignedCourse.name : <span style={{ color: '#bfbfbf' }}>Nieprzypisany</span>;
+    const getAssignedCourseName = (rec) => {
+        return rec.course ? rec.course.name : <span style={{ color: '#bfbfbf' }}>Nieprzypisany</span>;
     };
 
     if (loading) return <div className="admin-page-container">Ładowanie danych...</div>;
@@ -273,8 +271,8 @@ function AdminRecruitmentManager() {
                                             whiteSpace: 'nowrap',
                                             overflow: 'hidden',
                                             textOverflow: 'ellipsis'
-                                        }} title={getAssignedCourseName(rec.id).toString()}>
-                                            {getAssignedCourseName(rec.id)}
+                                        }} title={rec.course ? rec.course.name : 'Nieprzypisany'}>
+                                            {getAssignedCourseName(rec)}
                                         </div>
                                     </td>
 

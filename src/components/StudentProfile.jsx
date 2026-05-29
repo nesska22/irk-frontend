@@ -23,39 +23,39 @@ function StudentProfile() {
     }, [navigate]);
 
     useEffect(() => {
-            if (!user) return;
+        if (!user) return;
 
-            const fetchData = async () => {
-                try {
-                    const appRes = await fetch('http://localhost:8081/api/applications/my', {
-                        credentials: 'include'
-                    });
+        const fetchData = async () => {
+            try {
+                const appRes = await fetch('http://localhost:8081/api/applications/my', {
+                    credentials: 'include'
+                });
 
-                    if (appRes.ok) {
-                        const appsData = await appRes.json();
-                        setMyApplications(appsData);
+                if (appRes.ok) {
+                    const appsData = await appRes.json();
+                    setMyApplications(appsData);
 
-                        if (appsData.length > 0 && appsData[0].documents) {
-                            setDocuments(appsData[0].documents);
-                        }
+                    if (appsData.length > 0 && appsData[0].documents) {
+                        setDocuments(appsData[0].documents);
                     }
-
-                    const resultsRes = await fetch('http://localhost:8081/api/results/my', {
-                        credentials: 'include'
-                    });
-                    if (resultsRes.ok) {
-                        setResults(await resultsRes.json());
-                    }
-
-                } catch (err) {
-                    console.error("Błąd pobierania danych", err);
-                } finally {
-                    setLoading(false);
                 }
-            };
 
-            fetchData();
-        }, [user]);
+                const resultsRes = await fetch('http://localhost:8081/api/results/my', {
+                    credentials: 'include'
+                });
+                if (resultsRes.ok) {
+                    setResults(await resultsRes.json());
+                }
+
+            } catch (err) {
+                console.error("Błąd pobierania danych", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [user]);
 
     const handleLogout = async () => {
         try {
@@ -113,7 +113,7 @@ function StudentProfile() {
                     </div>
                 </div>
 
-                {/* SEKCJA 2: MOJE ZGŁOSZENIA */}
+                {/* SEKCJA 2: MOJE ZGŁOSZENIA (Zintegrowana i Naprawiona) */}
                 <div className="profile-section">
                     <h2 className="section-title text-blue">📝 Moje Zgłoszenia</h2>
                     {myApplications.length === 0 ? (
@@ -126,16 +126,20 @@ function StudentProfile() {
                                         <th>ID</th>
                                         <th>Rekrutacja</th>
                                         <th>Data Złożenia</th>
+                                        <th style={{ textAlign: 'center' }}>Punkty</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {myApplications.map(app => (
                                         <tr key={app.id}>
-                                            <td className="text-bold">{app.id}</td>
+                                            <td className="text-bold">#{app.id}</td>
                                             <td>{app.recruitment?.name || 'N/A'}</td>
                                             <td className="text-muted">
                                                 {new Date(app.createdAt).toLocaleString('pl-PL')}
+                                            </td>
+                                            <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#1890ff' }}>
+                                                {app.points !== null ? app.points : '0'} pkt
                                             </td>
                                             <td>
                                                 <span className="badge-status">{app.status}</span>

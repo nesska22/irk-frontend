@@ -3,7 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 function CandidatesList() {
     const navigate = useNavigate();
+    // Pobieramy ID rekrutacji z adresu (np. /admin/candidates/3)
     const { recruitmentId } = useParams();
+
     const [applications, setApplications] = useState([]);
     const [recruitmentName, setRecruitmentName] = useState("Ładowanie...");
     const [loading, setLoading] = useState(true);
@@ -13,22 +15,21 @@ function CandidatesList() {
     useEffect(() => {
         const fetchApplications = async () => {
             try {
+                // Zapytanie do backendu o aplikacje dla DANEJ rekrutacji
                 const response = await fetch(`http://localhost:8081/api/applications/recruitment/${recruitmentId}`, {
                     credentials: 'include'
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    setApplications(data);
 
-                    const initialDocs = {};
-                    data.forEach(app => {
-                        initialDocs[app.id] = app.documents || [];
-                    });
-                    setDocuments(initialDocs);
+                    // SORTOWANIE RANKINGOWE: Od najwyższego wyniku do najniższego
+                    const sortedData = data.sort((a, b) => (b.points || 0) - (a.points || 0));
 
-                    if(data.length > 0 && data[0].recruitment) {
-                        setRecruitmentName(data[0].recruitment.name);
+                    setApplications(sortedData);
+
+                    if(sortedData.length > 0 && sortedData[0].recruitment) {
+                        setRecruitmentName(sortedData[0].recruitment.name);
                     } else {
                         setRecruitmentName("Wybrana rekrutacja (Brak kandydatów)");
                     }
@@ -86,6 +87,7 @@ function CandidatesList() {
     };
 
     const getStatusStyle = (status) => {
+        // Tu możesz dostosować statusy do swoich z tabeli Application
         switch (status) {
             case "ZAKWALIFIKOWANY": return { backgroundColor: '#f6ffed', color: '#52c41a', border: '1px solid #b7eb8f' };
             case "LISTA REZERWOWA": return { backgroundColor: '#fff7e6', color: '#faad14', border: '1px solid #ffe58f' };
@@ -103,7 +105,7 @@ function CandidatesList() {
     if (loading) return <div>Ładowanie kandydatów...</div>;
 
     return (
-        <div className="candidates-container" style={{ position: 'relative' }}>
+        <div className="candidates-container">
             <div style={{ textAlign: 'left', marginBottom: '15px' }}>
                 <button onClick={() => navigate(-1)} className="back-button">
                     Powrót do listy rekrutacji
@@ -142,49 +144,87 @@ function CandidatesList() {
                 <table className="candidates-table">
                     <thead>
                         <tr>
-                            <th className="col-rank" style={{ width: '60px' }}>Poz.</th>
-                            <th>Imię i Nazwisko</th>
+                            <th style={{ width: '60px' }}>Poz.</th>
+                            <th>Imię i nazwisko</th>
                             <th>Email</th>
-                            <th className="col-status" style={{ textAlign: 'center' }}>Status</th>
+                            <th style={{ textAlign: 'center' }}>Punkty</th>
                             <th style={{ textAlign: 'center' }}>Dokumenty</th>
-                            <th className="col-actions" style={{ textAlign: 'center' }}>Akcje</th>
+                            <th style={{ textAlign: 'center' }}>Status</th>
+                            <th style={{ textAlign: 'center' }}>Akcje</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {applications.map((app) => {
+                        {applications.map((app, index) => {
                             const docStatus = getGeneralDocumentsStatus(app.id);
+
                             return (
                                 <tr key={app.id} className="table-row-hover">
-                                    <td className="col-rank" style={{ fontWeight: 'bold', color: '#595959' }}>
-                                        #{app.id}
+                                    <td
+                                        className="col-rank"
+                                        style={{
+                                            fontWeight: 'bold',
+                                            color: '#595959',
+                                            textAlign: 'center'
+                                        }}
+                                    >
+                                        {index + 1}
                                     </td>
-                                    <td style={{ fontWeight: '500' }}>{app.candidate.firstName} {app.candidate.lastName}</td>
-                                    <td style={{ color: '#8c8c8c', fontSize: '13px' }}>{app.candidate.email}</td>
+
+                                    <td style={{ fontWeight: '500' }}>
+                                        {app.candidate.firstName} {app.candidate.lastName}
+                                    </td>
+
+                                    <td style={{ color: '#8c8c8c', fontSize: '13px' }}>
+                                        {app.candidate.email}
+                                    </td>
+
+                                    <td style={{
+                                        textAlign: 'center',
+                                        fontWeight: 'bold',
+                                        color: '#1890ff',
+                                        fontSize: '15px'
+                                    }}>
+                                        {app.points ?? 0} pkt
+                                    </td>
+
+                                    <td style={{ textAlign: 'center' }}>
+                                        <span
+                                            style={{
+                                                display: 'inline-block',
+                                                padding: '4px 12px',
+                                                borderRadius: '20px',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                ...getDocStatusStyle(docStatus)
+                                            }}
+                                        >
+                                            {docStatus === "Dostarczone"
+                                                ? "Dostarczone"
+                                                : "Niedostarczone"}
+                                        </span>
+                                    </td>
+
                                     <td className="col-status" style={{ textAlign: 'center' }}>
-                                        <span style={{
-                                            display: 'inline-block',
-                                            padding: '4px 12px',
-                                            borderRadius: '20px',
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            ...getStatusStyle(app.status.toUpperCase())
-                                        }}>
+                                        <span
+                                            style={{
+                                                display: 'inline-block',
+                                                padding: '4px 12px',
+                                                borderRadius: '20px',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                ...getStatusStyle(
+                                                    app.status?.toUpperCase() || "ZŁOŻONA"
+                                                )
+                                            }}
+                                        >
                                             {app.status}
                                         </span>
                                     </td>
-                                    <td style={{ textAlign: 'center' }}>
-                                        <span style={{
-                                            display: 'inline-block',
-                                            padding: '4px 12px',
-                                            borderRadius: '20px',
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            ...getDocStatusStyle(docStatus)
-                                        }}>
-                                            {docStatus === "Dostarczone" ? "✅ Dostarczone" : "❌ Niedostarczone"}
-                                        </span>
-                                    </td>
-                                    <td className="col-actions" style={{ textAlign: 'center' }}>
+
+                                    <td
+                                        className="col-actions"
+                                        style={{ textAlign: 'center' }}
+                                    >
                                         <button
                                             className="details-button"
                                             onClick={() => setSelectedApp(app)}
@@ -195,9 +235,17 @@ function CandidatesList() {
                                 </tr>
                             );
                         })}
+
                         {applications.length === 0 && (
                             <tr>
-                                <td colSpan="6" style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+                                <td
+                                    colSpan="7"
+                                    style={{
+                                        textAlign: 'center',
+                                        padding: '20px',
+                                        color: '#999'
+                                    }}
+                                >
                                     Brak kandydatów w tej rekrutacji.
                                 </td>
                             </tr>

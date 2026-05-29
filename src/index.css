@@ -39,8 +39,8 @@ color: #333333;
 }
 
 .dashboard-wrapper {
-    width: 95%;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1800px;
     margin: 20px auto;
     padding: 20px;
 }
@@ -721,5 +721,275 @@ button[type="submit"]:hover {
 .loading {
     text-align: center;
     padding: 20px;
+}
+
+/* MÓJ PROFIL */
+
+.profile-loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 100% !important; /* Nadpisuje ewentualne ograniczenia do 1200px */
+    box-sizing: border-box;
+    padding: 20px 40px; /* Większy margines wewnętrzny z boków, żeby kafelki nie dotykały krawędzi ekranu */
+    margin: 0; /* Usuwamy auto-centrowanie */
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.profile-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-back-button {
+    background: none;
+    border: 2px solid #1890ff;
+    font-size: 14px;
+    cursor: pointer;
+    color: #1890ff;
+    padding: 6px 16px;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.profile-back-button:hover {
+    background-color: #1890ff;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.profile-header-decorator {
+    width: 4px;
+    height: 24px;
+    background-color: #1890ff;
+    border-radius: 2px;
+}
+
+.profile-header-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #434343;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.profile-logout-button {
+    padding: 8px 15px;
+    background-color: transparent;
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.profile-logout-button:hover {
+    background-color: #fff1f0;
+}
+
+/* UKŁAD KOLUMN OBOK SIEBIE */
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Zachowujemy 4 równe kolumny */
+    gap: 24px; /* Zwiększamy nieco odstępy między boksami, skoro jest więcej miejsca */
+    width: 100%;
+    align-items: start;
+}
+
+/* Pojedyncze okienko sekcji */
+.profile-section {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+    min-height: 350px;
+}
+
+.section-title {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.text-blue { color: #1890ff; }
+.text-bold { font-weight: bold; }
+.text-muted { font-size: 13px; color: #777; }
+
+/* Sekcja: Dane osobowe */
+.personal-data-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.data-group label {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.data-group p {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+/* Sekcja: Tabele / Zgłoszenia */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.profile-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    font-size: 13px;
+}
+
+.profile-table th {
+    padding: 10px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    background-color: #fafafa;
+    text-align: left;
+}
+
+.profile-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.badge-status {
+    background-color: #e6f7ff;
+    color: #1890ff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.empty-message {
+    color: #999;
+    text-align: center;
+    padding: 40px 10px;
+    font-size: 14px;
+}
+
+/* Sekcja: Wyniki egzaminów */
+.exam-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.exam-block {
+    margin-bottom: 5px;
+}
+
+.exam-sub-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+}
+
+.border-green { border-bottom: 2px solid #52c41a; color: #52c41a; }
+.border-blue { border-bottom: 2px solid #1890ff; color: #1890ff; }
+.border-orange { border-bottom: 2px solid #faad14; color: #faad14; }
+
+.scores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.score-card {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+}
+
+.score-label {
+    font-size: 10px;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.score-value {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.text-green { color: #52c41a; }
+
+.grades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.grade-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: #fafafa;
+    border: 1px solid #f0f0f0;
+}
+
+.grade-subject {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+}
+
+.badge-grade {
+    background-color: #fff7e6;
+    color: #faad14;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.badge-status.status-delivered {
+    background-color: #f6ffed;
+    color: #52c41a;
+    border: 1px solid #b7eb8f;
+}
+
+.badge-status.status-missing {
+    background-color: #fff1f0;
+    color: #ff4d4f;
+    border: 1px solid #ffa39e;
 }
 

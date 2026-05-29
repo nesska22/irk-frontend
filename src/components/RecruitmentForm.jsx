@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function RecruitmentForm() {
+    const navigate = useNavigate();
     const [activeRecruitments, setActiveRecruitments] = useState([]);
     const [myApplications, setMyApplications] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -62,7 +64,28 @@ function RecruitmentForm() {
 
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px', fontFamily: 'Arial' }}>
-            <h2>Wybór Rekrutacji</h2>
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '30px',
+                width: '100%'
+            }}>
+                <div style={{ flex: '1', textAlign: 'left' }}>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/dashboard')}
+                        className="profile-back-button"
+                        title="Wróć do dashboardu"
+                    >
+                        Powrót
+                    </button>
+                </div>
+                <div style={{ flex: '2', textAlign: 'center' }}>
+                    <h2 style={{ margin: 0, fontSize: '24px', color: '#333' }}>Wybór Rekrutacji</h2>
+                </div>
+                <div style={{ flex: '1' }}></div>
+            </div>
             <p style={{ color: '#555', marginBottom: '30px' }}>
                 Poniżej znajduje się lista aktywnych naborów. Wybierz ten, który Cię interesuje i złóż aplikację.
             </p>

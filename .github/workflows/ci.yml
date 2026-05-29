@@ -9,18 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-node@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
+          node-version: 20
 
-      - name: Build & test
-        run: |
-          chmod +x mvnw
-          ./mvnw -B clean verify
+      - name: Install dependencies
+        run: npm install
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: target/site/jacoco/
+      - name: Build app
+        run: npm run build

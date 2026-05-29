@@ -142,7 +142,7 @@ function CandidatesList() {
                 <table className="candidates-table">
                     <thead>
                         <tr>
-                            <th className="col-rank">ID</th>
+                            <th className="col-rank" style={{ width: '60px' }}>Poz.</th>
                             <th>Imię i Nazwisko</th>
                             <th>Email</th>
                             <th className="col-status" style={{ textAlign: 'center' }}>Status</th>

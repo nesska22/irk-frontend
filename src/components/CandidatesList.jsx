@@ -3,9 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 function CandidatesList() {
     const navigate = useNavigate();
-    // Pobieramy ID rekrutacji z adresu (np. /admin/candidates/3)
     const { recruitmentId } = useParams();
-
     const [applications, setApplications] = useState([]);
     const [recruitmentName, setRecruitmentName] = useState("Ładowanie...");
     const [loading, setLoading] = useState(true);
@@ -15,7 +13,6 @@ function CandidatesList() {
     useEffect(() => {
         const fetchApplications = async () => {
             try {
-                // Zapytanie do backendu o aplikacje dla DANEJ rekrutacji
                 const response = await fetch(`http://localhost:8081/api/applications/recruitment/${recruitmentId}`, {
                     credentials: 'include'
                 });
@@ -23,7 +20,6 @@ function CandidatesList() {
                 if (response.ok) {
                     const data = await response.json();
 
-                    // SORTOWANIE RANKINGOWE: Od najwyższego wyniku do najniższego
                     const sortedData = data.sort((a, b) => (b.points || 0) - (a.points || 0));
 
                     setApplications(sortedData);
@@ -87,7 +83,6 @@ function CandidatesList() {
     };
 
     const getStatusStyle = (status) => {
-        // Tu możesz dostosować statusy do swoich z tabeli Application
         switch (status) {
             case "ZAKWALIFIKOWANY": return { backgroundColor: '#f6ffed', color: '#52c41a', border: '1px solid #b7eb8f' };
             case "LISTA REZERWOWA": return { backgroundColor: '#fff7e6', color: '#faad14', border: '1px solid #ffe58f' };
@@ -144,7 +139,7 @@ function CandidatesList() {
                 <table className="candidates-table">
                     <thead>
                         <tr>
-                            <th style={{ width: '60px' }}>Poz.</th>
+                            <th style={{ width: '60px' }}>ID</th>
                             <th>Imię i nazwisko</th>
                             <th>Email</th>
                             <th style={{ textAlign: 'center' }}>Punkty</th>
@@ -275,42 +270,8 @@ function CandidatesList() {
                         <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '6px', marginBottom: '20px' }}>
                             <p style={{ margin: '5px 0' }}><strong>Imię i nazwisko:</strong> {selectedApp.candidate.firstName} {selectedApp.candidate.lastName}</p>
                             <p style={{ margin: '5px 0' }}><strong>Adres e-mail:</strong> {selectedApp.candidate.email}</p>
+                            <p style={{ margin: '5px 0' }}><strong>Numer telefonu:</strong> {selectedApp.candidate.phoneNumber}</p>
                             <p style={{ margin: '5px 0' }}><strong>Status aplikacji:</strong> {selectedApp.status}</p>
-                        </div>
-
-                        {/* Siatka z ocenami i wynikami */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px' }}>
-                            {/* Wyniki Matur */}
-                            <div style={{ border: '1px solid #e8e8e8', borderRadius: '8px', padding: '15px' }}>
-                                <h4 style={{ margin: '0 0 10px 0', color: '#52c41a', borderBottom: '1px solid #e8e8e8', paddingBottom: '5px' }}>📊 Wyniki egzaminów</h4>
-                                {selectedApp.results?.mandatory ? (
-                                    <div>
-                                        {Object.entries(selectedApp.results.mandatory).map(([subject, val]) => (
-                                            <div key={subject} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', margin: '6px 0' }}>
-                                                <span>{subject} (Podst.):</span>
-                                                <strong style={{ color: '#52c41a' }}>{val}%</strong>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p style={{ fontSize: '12px', color: '#999', margin: 0 }}>Brak wprowadzonych wyników.</p>
-                                )}
-                            </div>
-                            <div style={{ border: '1px solid #e8e8e8', borderRadius: '8px', padding: '15px' }}>
-                                <h4 style={{ margin: '0 0 10px 0', color: '#faad14', borderBottom: '1px solid #e8e8e8', paddingBottom: '5px' }}>🏫 Oceny ze świadectwa</h4>
-                                {selectedApp.results?.grades && selectedApp.results.grades.length > 0 ? (
-                                    <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
-                                        {selectedApp.results.grades.map((item, index) => (
-                                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', margin: '4px 0' }}>
-                                                <span>{item.subject}</span>
-                                                <strong style={{ color: '#faad14', backgroundColor: '#fffbe6', padding: '2px 6px', borderRadius: '4px' }}>{item.value}</strong>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p style={{ fontSize: '12px', color: '#999', margin: 0 }}>Brak wprowadzonych ocen ze świadectwa.</p>
-                                )}
-                            </div>
                         </div>
                         <div style={{ border: '1px solid #1890ff', borderRadius: '8px', padding: '20px', backgroundColor: '#e6f7ff' }}>
                             <h4 style={{ margin: '0 0 15px 0', color: '#1890ff', display: 'flex', alignItems: 'center', gap: '8px' }}>

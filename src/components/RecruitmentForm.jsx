@@ -104,7 +104,7 @@ function RecruitmentForm() {
                             display: 'flex',
                             flexDirection: 'column'
                         }}>
-                            <h3 style={{ marginTop: 0, color: '#1890ff' }}>{rec.name}</h3>
+                            <h3 style={{ marginTop: 0, color: '#1890ff' }}>{rec.name + ' - ' + rec.course.name}</h3>
                             <p style={{ margin: '5px 0', fontSize: '14px', color: '#666' }}>
                                 <strong>Od:</strong> {rec.startDate} <br/>
                                 <strong>Do:</strong> {rec.endDate}

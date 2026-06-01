@@ -134,7 +134,7 @@ function StudentProfile() {
                                     {myApplications.map(app => (
                                         <tr key={app.id}>
                                             <td className="text-bold">#{app.id}</td>
-                                            <td>{app.recruitment?.name || 'N/A'}</td>
+                                            <td>{app.recruitment?.name + ' - ' + app.recruitment?.course?.name || 'N/A'}</td>
                                             <td className="text-muted">
                                                 {new Date(app.createdAt).toLocaleString('pl-PL')}
                                             </td>
